@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+spec:
+  serviceName: "redis"
+  replicas: {{ .Values.redis.replicaCount }}
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: {{ .Values.redis.image }}:{{ .Values.redis.tag }}
+          ports:
+            - containerPort: {{ .Values.redis.port }}
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kube-app-secrets
+                  key: REDIS_PASSWORD
+
+          volumeMounts:
+            - name: redis-persistent-storage
+              mountPath: /data
+          command: ["/bin/sh", "-c"]
+          args:
+            - exec redis-server --appendonly yes --requirepass "$REDIS_PASSWORD"
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-persistent-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.storageClass.storageClassName }}
+        resources:
+          requests:
+            storage: {{ .Values.storage.redis }}

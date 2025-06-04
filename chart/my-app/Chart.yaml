@@ -1,0 +1,4 @@
+apiVersion: v2
+name: myapp-chart
+description: A 3-tier application on EKS
+version: 0.1.0

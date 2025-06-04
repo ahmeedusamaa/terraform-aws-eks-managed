@@ -1,0 +1,42 @@
+redis:
+  image: redis
+  tag: 7.0
+  port: 6379
+  replicaCount: 1
+
+backend:
+  image: 
+    repository: 384747603695.dkr.ecr.ap-south-1.amazonaws.com/ecr-back
+    tag: 1.0.0
+  port: 3000
+  serviceName: backend-service
+  replicaCount: 1
+
+frontend:
+  image: 
+    repository: 384747603695.dkr.ecr.ap-south-1.amazonaws.com/ecr-front
+    tag: 1.0.0
+  port: 80
+  serviceName: frontend-service
+  replicaCount: 1
+
+mysql:
+  image: mysql
+  tag: 8.0
+  port: 3306
+  replicaCount: 1
+
+tls:
+  host: ahmed.zaboyzz.com
+  secretName: tls-secret
+  issuerEmail: ahmed@G.com
+
+storage:
+  backend: 10Gi
+  redis: 2Gi
+  mysql: 10Gi
+  
+storageClass: 
+  storageClassName: ebs-sc
+  volumeBindingMode: WaitForFirstConsumer
+  

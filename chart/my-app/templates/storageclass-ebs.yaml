@@ -1,0 +1,8 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.storageClass.storageClassName }}
+provisioner: ebs.csi.aws.com
+volumeBindingMode: {{ .Values.storageClass.volumeBindingMode }}
+parameters:
+  type: gp3

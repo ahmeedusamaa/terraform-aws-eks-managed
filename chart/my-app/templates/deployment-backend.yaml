@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: {{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}
+          ports:
+            - containerPort: {{ .Values.backend.port }}
+          env:
+          - name: MYSQL_HOST
+            valueFrom:
+              secretKeyRef:
+                name: kube-app-secrets
+                key: MYSQL_HOST
+          - name: MYSQL_PORT
+            valueFrom:
+              secretKeyRef:
+                name: kube-app-secrets
+                key: MYSQL_PORT
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: kube-app-secrets
+                key: MYSQL_USER
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: kube-app-secrets
+                key: MYSQL_PASSWORD
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: kube-app-secrets
+                key: MYSQL_DATABASE
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                name: kube-app-secrets
+                key: REDIS_HOST
+          - name: REDIS_PORT
+            valueFrom:
+              secretKeyRef:
+                name: kube-app-secrets
+                key: REDIS_PORT
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: kube-app-secrets
+                key: REDIS_PASSWORD
+
+          volumeMounts:
+            - name: backend-storage
+              mountPath: /app/data
+      volumes:
+        - name: backend-storage
+          persistentVolumeClaim:
+            claimName: my-ebs-pvc
