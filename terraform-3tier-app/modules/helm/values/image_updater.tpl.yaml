@@ -1,0 +1,99 @@
+# serviceAccount:
+#   create: false
+#   name: "argocd-image-updater-sa"
+
+# config:
+#   registries:
+#     - name: ecr
+#       api_url: "https://${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com"
+
+#   repositories:
+#     - name: "${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/${ecr_front}"
+#       registry: ecr
+#       image: "${ecr_front}"
+
+#     - name: "${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/${ecr_back}"
+#       registry: ecr
+#       image: "${ecr_back}"
+
+
+###########################33
+
+
+---
+# serviceAccount:
+#   name: argocd-image-updater-sa
+#   create: false
+
+# authScripts:
+#   enabled: true
+#   scripts:
+#     auth.sh: |
+#       #!/bin/sh
+#       HOME=/tmp aws ecr --region ${aws_region} get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d
+
+# config:
+#   registries:
+#   - name: ECR
+#     api_url: https://${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com"
+#     prefix: "{aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com"
+#     ping: yes
+#     insecure: no
+#     credentials: ext:/scripts/auth.sh
+#     credsexpire: 10h
+
+
+########################## 
+
+
+serviceAccount:
+  name: argocd-image-updater-sa
+  create: false
+
+authScripts: 
+  enabled: true
+  scripts:
+    auth.sh: |
+      #!/bin/sh
+      HOME=/tmp  aws ecr --region ap-south-1 get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d
+
+config:
+  registries:
+    - name: ECR
+      api_url: https://384747603695.dkr.ecr.ap-south-1.amazonaws.com
+      prefix: 384747603695.dkr.ecr.ap-south-1.amazonaws.com
+      ping: yes
+      insecure: no
+      default: true
+      credentials: ext:/scripts/auth.sh
+      credsexpire: 10h
+
+
+
+##############################
+
+
+
+
+# Argo CD Image Updater scans all Argo CD apps every 2 minutes, 
+# loads image references (via annotations or manifests),
+# filters them by prefix, queries ECR for available tags, compares them to the current tag in Git, 
+# and writes back to Git if a newer image is found.
+# serviceAccount:
+#   name: argocd-image-updater-sa
+#   create: false
+
+# config:
+#   registries:
+#     - name: ECR
+#       # The ECR endpoint to authenticate and query images 
+#       api_url: https://384747603695.dkr.ecr.us-east-1.amazonaws.com
+#       # The start of the image name that Argo CD Image Updater will monitor
+#       prefix: 384747603695.dkr.ecr.us-east-1.amazonaws.com
+#       ping: yes
+#       insecure: no
+#       default: true
+#       # where to send the ECR API calls.
+#       credentials:
+#         awsRegion: us-east-1
+#       credsexpire: 10h

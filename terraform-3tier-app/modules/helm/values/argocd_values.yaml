@@ -1,0 +1,44 @@
+controller:
+  serviceType: ClusterIP
+
+crds:
+  install: true
+  keep: true
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      nginx.ingress.kubernetes.io/secure-backends: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/x-forwarded-prefix: "/"
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      kubernetes.io/ingress.class: "nginx"
+    hosts:
+      - argocd-server.${domain_name}
+    tls:
+      - hosts:
+          - argocd-server.${domain_name}
+        secretName: argocd-tls
+      
+
+    hostname: argocd-server.${domain_name}
+    path: /
+    pathType: Prefix
+
+
+global:
+  # -- Default domain used by all components
+  ## Used for ingresses, certificates, SSO, notifications, etc.
+  domain: argocd-server.${domain_name}
+
+
+configs:
+  cm:
+    admin.enabled: true
+  secret:
+    argocdServerAdminPassword: "$2y$12$WrFi3Wg3FxoV7tZ3AdC2LOkbZ2zHc2v67TJ99UEkB1ukI2skoCQSu"

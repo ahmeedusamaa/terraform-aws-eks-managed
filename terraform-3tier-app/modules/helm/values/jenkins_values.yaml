@@ -1,0 +1,70 @@
+controller:
+  nodeSelector:
+    topology.kubernetes.io/zone: "ap-south-1a"
+  
+  jenkinsInboundAgent:
+    disableStrictVerification: true
+
+  installPlugins:
+    - sonar
+    - dependency-check-jenkins-plugin
+    - amazon-ecr
+    - aws-secrets-manager-credentials-provider
+    - git
+    - github
+    - github-api
+    - github-branch-source
+    - docker-workflow
+    - kubernetes
+    - configuration-as-code
+    - workflow-aggregator
+    - credentials-binding
+    - plain-credentials
+    - ssh-credentials
+    - matrix-auth
+    - pipeline-stage-view
+    - pipeline-github-lib
+    - antisamy-markup-formatter
+    - mailer
+    - ws-cleanup
+    - workflow-job
+    - workflow-cps
+    - workflow-basic-steps
+    - workflow-durable-task-step
+    - dark-theme
+    - generic-webhook-trigger
+
+
+############3
+
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      kubernetes.io/ingress.class: "nginx"
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    ingressClassName: "nginx"
+    hostName: "jenkins-server.${domain_name}"
+    path: /
+    pathType: Prefix
+    tls:
+      # Ingress uses that secret to serve HTTPS to users.
+      - secretName: jenkins-tls
+        hosts:
+          - "jenkins-server.${domain_name}"
+
+  serviceType: ClusterIP
+  admin:
+    # -- Admin username created as a secret if `controller.admin.createSecret` is true
+    username: "admin"
+    # -- Admin password created as a secret if `controller.admin.createSecret` is true
+    # @default -- <random password>
+    password: "admin123"
+
+# Jenkins Helm chart usually sets up the required ServiceAccount and permissions (RBAC) 
+# so Jenkins can control Kubernetes resources (like creating pods for builds).
+persistence:
+  enabled: true
+  existingClaim: "jenkins-pvc"
+  storageClass: "-"

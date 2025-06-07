@@ -1,0 +1,20 @@
+controllers:
+  ingressClassResource:
+    name: nginx
+    enabled: true
+    default: true
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: external 
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-name: eks-apps-nlb
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+
+# Internet
+#   ↓
+# AWS Network Load Balancer (public IP)
+#   ↓ (targetType = ip)
+# NGINX Ingress Controller pod (via its pod IP)
+#   ↓ (based on path/host)
+# App Service/Pod
