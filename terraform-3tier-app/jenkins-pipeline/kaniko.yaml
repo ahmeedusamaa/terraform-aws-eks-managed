@@ -1,0 +1,74 @@
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: kaniko
+# spec:
+#   serviceAccountName: kaniko-serviceaccount  
+#   containers:
+#   - name: kaniko
+#     image: gcr.io/kaniko-project/executor:latest
+#     args:
+#     - --dockerfile=/workspace/Dockerfile
+#     - --context=git://github.com/your/repo.git
+#     - --destination=your_aws_account_id.dkr.ecr.region.amazonaws.com/repo:tag
+#     - --cleanup
+
+
+pipeline {
+    agent {
+        kubernetes {
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kaniko
+spec:
+  serviceAccountName: kaniko-serviceaccount 
+  containers:
+    - name: kaniko
+      imagePullPolicy: IfNotPresent
+      image: gcr.io/kaniko-project/executor:debug
+      command:
+        - /busybox/cat
+      tty: true
+  restartPolicy: Never
+"""
+        }
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/ahmeedusamaa/Simple-3-tier-app.git']])
+            }
+        }
+        
+        stage('Frontend CI') {
+            steps {
+                container('kaniko') {
+                    script {
+                        sh """
+                        /kaniko/executor --dockerfile `pwd`/FrontEnd/Dockerfile \
+                                         --context `pwd`/FrontEnd \
+                                         --destination=384747603695.dkr.ecr.ap-south-1.amazonaws.com/ecr-front:1.1.${env.BUILD_NUMBER}
+                        """
+                    }
+                }
+            }
+        }
+        
+        stage('Backend CI') {
+            steps {
+                container('kaniko') {
+                    script {
+                        sh """
+                        /kaniko/executor --dockerfile `pwd`/BackEnd/Dockerfile \
+                                         --context `pwd`/BackEnd \
+                                         --destination=384747603695.dkr.ecr.ap-south-1.amazonaws.com/ecr-back:1.1.${env.BUILD_NUMBER}
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
