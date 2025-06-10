@@ -31,7 +31,7 @@ module "helm" {
   ecr_front = module.ECR.ecr_front
   ecr_back = module.ECR.ecr_back
   aws_account_id = var.aws_account_id
-  depends_on = [ module.eks , module.nodeGroups ] 
+  depends_on = [ module.eks , module.nodeGroups, module.kubernetes ] 
   domain_name = var.domain_name
 }
 
