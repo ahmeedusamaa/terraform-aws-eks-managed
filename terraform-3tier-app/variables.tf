@@ -110,10 +110,3 @@ variable "redis_password" {
   description = "Redis password"
   type        = string
 }
-
-variable "github-credentials" {
-  description = "GitHub credentials for accessing private repositories"
-  type        = string
-  sensitive   = true
-  
-}

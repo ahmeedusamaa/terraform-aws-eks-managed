@@ -78,5 +78,6 @@ resource "kubernetes_service_account" "image_updater_sa" {
       "eks.amazonaws.com/role-arn" = aws_iam_role.image_updater_irsa.arn
     }
   }
+  depends_on = [ helm_release.argo-cd, aws_iam_role_policy_attachment.image_updater_policy_attach]
 }
 

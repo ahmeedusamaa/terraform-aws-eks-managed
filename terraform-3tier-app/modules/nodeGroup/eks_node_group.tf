@@ -7,7 +7,7 @@ resource "aws_eks_node_group" "system" {
   version = "1.33" 
 
   scaling_config {
-    desired_size = 2
+    desired_size = 3
     max_size     = 3
     min_size     = 1
   }
