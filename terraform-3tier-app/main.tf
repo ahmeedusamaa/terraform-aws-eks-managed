@@ -11,7 +11,6 @@ module "nodeGroups" {
   private_subnets = module.networking.private_subnet_ids
   cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
   cluster_oidc_provider_arn = module.eks.cluster_oidc_provider_arn
-  depends_on = [ module.eks ]
 }
 
 module "networking" {
@@ -52,7 +51,6 @@ module "secrets" {
 module "ECR" {
   source = "./modules/ECR"
   eks_cluster_name = module.eks.eks_cluster_name
-  depends_on = [ module.eks ]
 }
 
 module "Route53" {
