@@ -11,5 +11,7 @@ resource "helm_release" "argo-cd" {
       domain_name  = var.domain_name
     })
   ]
+
+  depends_on = [ helm_release.nginx_ingress ]
 } 
 

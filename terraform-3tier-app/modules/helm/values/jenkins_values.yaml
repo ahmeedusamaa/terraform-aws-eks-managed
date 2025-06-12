@@ -1,6 +1,6 @@
 controller:
-  nodeSelector:
-    topology.kubernetes.io/zone: "ap-south-1a"
+  # nodeSelector:
+  #   topology.kubernetes.io/zone: "ap-south-1a"
   
   jenkinsInboundAgent:
     disableStrictVerification: true
@@ -64,7 +64,9 @@ controller:
 
 # Jenkins Helm chart usually sets up the required ServiceAccount and permissions (RBAC) 
 # so Jenkins can control Kubernetes resources (like creating pods for builds).
+
+
 persistence:
   enabled: true
-  existingClaim: "jenkins-pvc"
-  storageClass: "-"
+  size: 8Gi
+  storageClass: gp2
