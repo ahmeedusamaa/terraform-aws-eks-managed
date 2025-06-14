@@ -1,4 +1,3 @@
-# Terraform AWS EKS Managed
 ![Project Diagram](./Architecture.png)
 This project provides Terraform configurations to set up and manage an AWS EKS (Elastic Kubernetes Service) cluster. The EKS cluster serves as the foundation for deploying containerized applications, enabling scalability, high availability, and integration with AWS services. Additionally, a Jenkins pipeline is configured to build and push Docker images using Kaniko, and ArgoCD is used for GitOps-based application deployment.
 
