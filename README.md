@@ -1,5 +1,5 @@
 # Terraform AWS EKS Managed
-
+![Project Diagram](./Architecture.png)
 This project provides Terraform configurations to set up and manage an AWS EKS (Elastic Kubernetes Service) cluster. The EKS cluster serves as the foundation for deploying containerized applications, enabling scalability, high availability, and integration with AWS services.
 
 ## Project Structure
